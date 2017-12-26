@@ -1,0 +1,39 @@
+{
+	"parserOptions": {
+		"ecmaVersion": 8,
+		"sourceType": "module",
+		"ecmaFeatures": {
+			"jsx": true
+		}
+	},
+	"extends": [
+		"eslint:recommended"
+	],
+	"rules": {
+		"quotes": [1, "single", "avoid-escape"],
+		"no-console": 0,
+		"no-alert": 0,
+		"no-trailing-spaces": 0,
+		"no-unused-vars": 1,
+		"semi": 1,
+		"node/exports-style": [
+			"error",
+			"exports",
+			{
+				"allowBatchAssign": true
+			}
+		],
+		"async-await/space-after-async": 1,
+		"async-await/space-after-await": 1
+	},
+	"plugins": [
+		"node",
+		"async-await"
+	],
+	"env": {
+		"browser": true,
+		"node": true,
+		"es6": true
+	},
+	"globals": {}
+}
