@@ -14,13 +14,10 @@ import modeStore from './mobx/modeStore.js';
 
 @observer
 class App extends Component {
-	constructor() {
-		super();
-		this.state = {};
-	}
-
-	componentWillMount() {}
-
+	// constructor() {
+	// 	super();
+	// 	this.state = {};
+	// }
 	render() {
 		return (
 			<View style={styles.container}>
@@ -28,12 +25,11 @@ class App extends Component {
 				<Text style={{color: '#fff'}}>Weather App!</Text>
 				<Button
 					color='black'
-					title={ modeStore.forecast ? 'Get 5-day Forecast' : 'Get Current Weather' }
+					title={ modeStore.forecast ? 'Get Current Weather' : 'Get 5-day Forecast' }
 					onPress={() => modeStore.searchChange()}
 					accessibilityLabel='Change Request Mode'
 				/>
 				<UserInput />
-				<Text style={{color: '#fff'}}>Display Area Header</Text>
 				<DisplayArea />
 			</View>
 		);

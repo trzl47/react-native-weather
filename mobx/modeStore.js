@@ -28,6 +28,7 @@ class modeStore {
 	}
 
 	unitChange = () => {
+		this.metric = !this.metric
 		console.log(`units changed to ${this.metric}`);
 	}
 }

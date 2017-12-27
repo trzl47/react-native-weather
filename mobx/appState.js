@@ -10,11 +10,13 @@ const DEFAULT_CITY = 'Kansas City';
 const DEFAULT_COUNTRY = 'US';
 const API_KEY = '31d62ddacc48d72645a6c0e14680d1b6';
 let unit = modeStore.metric ? 'metric' : 'imperial';
+let owm_api_url = ``;
 
 class appState {
 	@observable mode = 0;
 	@observable loading = false;
 	@observable searchCity = DEFAULT_CITY;
+	@observable cityID = '0';
 	@observable countryCode = DEFAULT_COUNTRY;
 	@observable zipcode = DEFAULT_ZIPCODE;
 	@observable longitude = '0.0';
@@ -22,8 +24,8 @@ class appState {
 	@observable apikey = API_KEY;
 	@observable days = [];
 	@observable forecast = [];
-	@observable weather = {};
-	@observable location = {};
+	@observable main = {};
+	@observable weather = [];
 
 	updateSearchCity = (text) => {
 		this.searchCity = text;
@@ -50,30 +52,60 @@ class appState {
 		console.log(`latitude = ${this.latitude}`);
 	}
 
-	handleSubmit = (e) => {
-		console.log('submit button pressed');
+	handleSubmit = () => {
 		this.loading = true;
-		console.log(`this.loading = ${this.loading}`);
 		modeStore.forecast ? this.getForecast(unit) : this.getWeather(unit);
+	}
+
+	// used to get postal codes globally; OWM is limited to US
+	geonamesAPI = (lat,lon) => {
+		const url = `http://api.geonames.org/findNearbyPostalCodesJSON?lat=${lat}&lng=${lon}&username=trzl47`
+
+		axios.get(url)
+		.then((response) => {
+			this.zipcode = response.data.postalCodes[0].postalCode;
+		})
+		.catch(error => {
+			console.log('Error fetching geonamesAPI', error);
+			return 'geonames error';
+		});
 	}
 
 	getWeather = (unit) => {
 		console.log('getWeather() hit');
-		const CITY_CURRENT_URL = `http://api.openweathermap.org/data/2.5/weather?q=${this.searchCity}&units=${unit}&appid=${this.apikey}`
 
-		axios.get(CITY_CURRENT_URL)
+		const urlChange = (url) => {
+			if(modeStore.inputMode == 0 ) {
+				return url = `http://api.openweathermap.org/data/2.5/weather?q=${this.searchCity}&units=${unit}&appid=${this.apikey}`;
+			}
+			else if(modeStore.inputMode == 1 ) {
+				return url = `http://api.openweathermap.org/data/2.5/weather?lat=${this.latitude}&lon=${this.longitude}&units=${unit}&appid=${this.apikey}`;;
+			}
+			else if(modeStore.inputMode == 2 ) {
+				return url = `http://api.openweathermap.org/data/2.5/weather?zip=${this.zipcode},${this.countryCode}&units=${unit}&appid=${this.apikey}`;;
+			}
+			else if(modeStore.inputMode == 3 ) {
+				return url = `http://api.openweathermap.org/data/2.5/weather?id=${this.cityID}&units=${unit}&appid=${this.apikey}`;;
+			}
+		};
+
+		axios.get(urlChange(owm_api_url))
 		.then((response) => {
 			if (response.status == 200) {
-				this.weather = response.data;
+				this.main = response.data.main;
+				this.weather = response.data.weather;
+				this.searchCity = response.data.name;
+				this.countryCode = response.data.sys.country;
+				this.latitude = response.data.coord.lat.toString();
+				this.longitude = response.data.coord.lon.toString();
+				this.geonamesAPI(response.data.coord.lat, response.data.coord.lon);
 				this.loading = false;
-				console.log(this.weather);
-				console.log(this.location);
 			}
 		})
 		.catch(error => {
 			console.log('Error fetching and parsing data by coordinates', error);
 			this.loading = false;
-	});
+		});
 	}
 
 	getForecast = (unit) => {

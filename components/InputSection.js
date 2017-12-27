@@ -54,13 +54,13 @@ const zipSearch = () => {
 		<TextInput
 			style={{height: 40}}
 			onChangeText={(text) => appState.updateZipCode(text)}
-			value={appState.latitude}
+			value={appState.zipcode}
 		/>
 		<Text> Country </Text>
 		<TextInput
 			style={{height: 40}}
 			onChangeText={(text) => appState.updateCountryCode(text)}
-			value={appState.zipcode}
+			value={appState.countryCode}
 		/>
 	</View>
 	);
@@ -89,7 +89,7 @@ class InputSection extends Component {
 	componentWillMount() {}
 
 	render() {
-		const inputChange = () => {4
+		const inputChange = () => {
 			if(modeStore.inputMode == 0 ) {
 				return citySearch();
 			}
@@ -110,7 +110,7 @@ class InputSection extends Component {
 				<Button
 					color='black'
 					title={ appState.loading ? 'Loading...' : 'Submit' }
-					onPress={(e) => appState.handleSubmit(e)}
+					onPress={() => appState.handleSubmit()}
 					accessibilityLabel='Get weather'
 				/>
 			</View>
