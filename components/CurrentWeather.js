@@ -42,9 +42,7 @@ class CurrentWeather extends Component {
 
 		return (
 			<View style={styles.currentsection}>
-				<Text style={{color: '#fff'}}>Current Weather</Text>
 				<View style={styles.currentrow}>
-					<Text style={{color: '#fff'}}>Current Weather Row</Text>
 					<Weather
 						tempArr={formTempArr(appState.main.temp,appState.main.temp_max,appState.main.temp_min)}
 					/>

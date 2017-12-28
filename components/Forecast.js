@@ -40,7 +40,6 @@ class Forecast extends Component {
 
 		return (
 			<View style={styles.forecastsection}>
-				<Text style={{color: '#fff'}}>Forecast</Text>
 				<View style={styles.forecastrow}>
 					<Text style={{color: '#fff'}}>Forecast Row</Text>
 					<Weather tempArr={checkArrayLength(0)} />

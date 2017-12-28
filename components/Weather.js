@@ -54,7 +54,6 @@ class Weather extends Component {
 		}
 		return (
 			<View style={styles.weathersection}>
-				<Text style={{color: '#fff'}}>Weather</Text>
 					{ loadingRender() }
 			</View>
 		);

@@ -19,7 +19,6 @@ class DisplayArea extends Component {
 	render() {
 		return (
 			<View style={styles.displaysection}>
-				<Text style={{color: '#fff'}}>Display Area</Text>
 				{ modeStore.forecast ? <Forecast /> : <CurrentWeather /> }
 			</View>
 		);
