@@ -36,39 +36,19 @@ class CurrentWeather extends Component {
 			return value == undefined ? '-' : value;
 		}
 
-		const getUnits = (metric) => {
-			return metric ? 'C' : 'F'
-		}
-
-		const loadingRender = () => {
-			if (appState.loading) {
-				return (
-					<View style={styles.weathersection}>
-						<Text style={{color: '#fff'}}> Gathering Weather Data... </Text>
-					</View>
-				)
-			}
-			else {
-				return (
-					<View style={styles.weathersection}>
-						<Text style={{color: '#fff'}}>
-							{ checkUndefined(appState.main.temp).toString() }&deg;{ getUnits(modeStore.metric) }
-						</Text>
-						<Text style={{color: '#fff'}}>
-							HI: { checkUndefined(appState.main.temp_max).toString() }&deg;{ getUnits(modeStore.metric) }
-						</Text>
-						<Text style={{color: '#fff'}}>
-							LO: { checkUndefined(appState.main.temp_min).toString() }&deg;{ getUnits(modeStore.metric) }
-						</Text>
-					</View>
-				)
-			}
+		const formTempArr = (temp,max,min) => {
+			return [checkUndefined(temp),checkUndefined(max),checkUndefined(min)];
 		}
 
 		return (
 			<View style={styles.currentsection}>
 				<Text style={{color: '#fff'}}>Current Weather</Text>
-				{ loadingRender() }
+				<View style={styles.currentrow}>
+					<Text style={{color: '#fff'}}>Current Weather Row</Text>
+					<Weather
+						tempArr={formTempArr(appState.main.temp,appState.main.temp_max,appState.main.temp_min)}
+					/>
+				</View>
 			</View>
 		);
 	}
@@ -81,9 +61,9 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
-	weathersection: {
+	currentrow: {
 		flex: -3,
-		flexDirection: 'column',
+		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
