@@ -14,10 +14,6 @@ import modeStore from './mobx/modeStore.js';
 
 @observer
 class App extends Component {
-	// constructor() {
-	// 	super();
-	// 	this.state = {};
-	// }
 	render() {
 		return (
 			<View style={styles.container}>

@@ -28,7 +28,7 @@ class appState {
 	@observable latitude = '0.0';
 	@observable apikey = API_KEY;
 	@observable days = [];
-	@observable forecast = [];
+	@observable forecastArr = [];
 	@observable main = {};
 	@observable weather = [];
 
@@ -111,23 +111,30 @@ class appState {
 			}
 		})
 		.catch(error => {
-			console.log('Error fetching and parsing data by coordinates', error);
+			console.log('Error fetching and parsing data', error);
 			this.loading = false;
 		});
 	}
 
 	getForecast = () => {
 		console.log('getForecast() hit');
-
 		axios.get(this.urlChange(queryModeEval()))
 		.then((response) => {
 			if (response.status == 200) {
-				console.log(response.data.cnt);
+				response.data.list.forEach((element) => {
+					this.forecastArr.push(element);
+				});
+				// console.log(response.data);
+				this.searchCity = response.data.city.name;
+				this.countryCode = response.data.city.country;
+				this.latitude = response.data.city.coord.lat.toString();
+				this.longitude = response.data.city.coord.lon.toString();
+				this.geonamesAPI(response.data.city.coord.lat, response.data.city.coord.lon);
 				this.loading = false;
 			}
 		})
 		.catch(error => {
-			console.log('Error fetching and parsing data by coordinates', error);
+			console.log('Error fetching and parsing data', error);
 			this.loading = false;
 	});
 	}
