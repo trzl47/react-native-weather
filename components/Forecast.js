@@ -33,48 +33,18 @@ class Forecast extends Component {
 	}
 
 	render() {
-		const checkUndefined = (value) => {
-			return value == undefined ? '-' : value;
-		}
-
-		const getUnits = (metric) => {
-			return metric ? 'C' : 'F'
-		}
-
-		const loadingRender = () => {
-			if (appState.loading) {
-				return (
-					<View style={styles.weathersection}>
-						<Text style={{color: '#fff'}}> Gathering Weather Data... </Text>
-					</View>
-				)
-			}
-			else {
-				// initial render has empty array - this is to get past that
-				const checkArrayLength = (element) => {
-					const tempArr = appState.forecastArr.length < 1 ? ['-','-','-'] : [appState.forecastArr[element].main.temp, appState.forecastArr[element].main.temp_max, appState.forecastArr[element].main.temp_min] ;
-					return tempArr;
-				}
-				return (
-					<View style={styles.weathersection}>
-						<Text style={{color: '#fff'}}>
-						{ checkUndefined(checkArrayLength(0)[0]).toString() }&deg;{ getUnits(modeStore.metric) }
-						</Text>
-						<Text style={{color: '#fff'}}>
-							HI: { checkUndefined(checkArrayLength(0)[1]).toString() }&deg;{ getUnits(modeStore.metric) }
-						</Text>
-						<Text style={{color: '#fff'}}>
-							LO: { checkUndefined(checkArrayLength(0)[2]).toString() }&deg;{ getUnits(modeStore.metric) }
-						</Text>
-					</View>
-				)
-			}
+		const checkArrayLength = (element) => {
+			const tempArr = appState.forecastArr.length < 1 ? ['-','-','-'] : [appState.forecastArr[element].main.temp, appState.forecastArr[element].main.temp_max, appState.forecastArr[element].main.temp_min] ;
+			return tempArr;
 		}
 
 		return (
 			<View style={styles.forecastsection}>
 				<Text style={{color: '#fff'}}>Forecast</Text>
-				{ loadingRender() }
+				<View style={styles.forecastrow}>
+					<Text style={{color: '#fff'}}>Forecast Row</Text>
+					<Weather tempArr={checkArrayLength(0)} />
+				</View>
 			</View>
 		);
 	}
@@ -87,9 +57,9 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
-	weathersection: {
+	forecastrow: {
 		flex: -3,
-		flexDirection: 'column',
+		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
