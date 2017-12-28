@@ -83,7 +83,7 @@ class Forecast extends Component {
 const styles = StyleSheet.create({
 	forecastsection: {
 		flex: -2,
-		flexDirection: 'row',
+		flexDirection: 'column',
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
