@@ -14,15 +14,29 @@ import appState from '../mobx/appState.js';
 @observer
 class Forecast extends Component {
 
-	componentWillMount() {}
+	componentWillMount() {
+		navigator.geolocation.getCurrentPosition(
+			(position) => {
+					appState.latitude = position.coords.latitude.toString();
+					appState.longitude = position.coords.longitude.toString();
+					modeStore.inputMode = 1;
+					appState.handleSubmit()
+			},
+			(error) => {
+				appState.handleSubmit();
+			}
+		);
+	}
 
 	render() {
+		const checkUndefined = (value) => {
+			return value == undefined ? '-' : value;
+		}
+		const getUnits = (metric) => {
+			return metric ? 'C' : 'F'
+		}
 		return (
 			<View style={styles.forecastsection}>
-				{/* <FlatList
-					data={[{key: 'a'}, {key: 'b'}]}
-					renderItem={({item}) => <Text>{item.key}</Text>}
-				/> */}
 				<Text style={{color: '#fff'}}>Forecast</Text>
 			</View>
 		);

@@ -25,6 +25,7 @@ class modeStore {
 
 	searchChange = () => {
 		this.forecast = !this.forecast;
+		console.log(`forecast = ${this.forecast}`);
 	}
 
 	unitChange = () => {

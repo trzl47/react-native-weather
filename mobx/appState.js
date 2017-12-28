@@ -9,8 +9,13 @@ const DEFAULT_ZIPCODE = '64133';
 const DEFAULT_CITY = 'Kansas City';
 const DEFAULT_COUNTRY = 'US';
 const API_KEY = '31d62ddacc48d72645a6c0e14680d1b6';
-let unit = modeStore.metric ? 'metric' : 'imperial';
-let owm_api_url = ``;
+const queryModeEval = () => {
+	return modeStore.forecast ? 'forecast' : 'weather';
+}
+
+const unitModeEval = () => {
+	return modeStore.metric ? 'metric' : 'imperial';
+}
 
 class appState {
 	@observable mode = 0;
@@ -52,9 +57,13 @@ class appState {
 		console.log(`latitude = ${this.latitude}`);
 	}
 
+	getIcon = (id) => {
+		const ICON_URL = `http://openweathermap.org/img/w/${id}.png`;
+	}
+
 	handleSubmit = () => {
 		this.loading = true;
-		modeStore.forecast ? this.getForecast(unit) : this.getWeather(unit);
+		modeStore.forecast ? this.getForecast() : this.getWeather();
 	}
 
 	// used to get postal codes globally; OWM is limited to US
@@ -71,25 +80,24 @@ class appState {
 		});
 	}
 
-	getWeather = (unit) => {
+	urlChange = (querymode) => {
+		if(modeStore.inputMode == 0 ) {
+			return url = `http://api.openweathermap.org/data/2.5/${querymode}?q=${this.searchCity}&units=${unitModeEval()}&appid=${this.apikey}`;
+		}
+		else if(modeStore.inputMode == 1 ) {
+			return url = `http://api.openweathermap.org/data/2.5/${querymode}?lat=${this.latitude}&lon=${this.longitude}&units=${unitModeEval()}&appid=${this.apikey}`;;
+		}
+		else if(modeStore.inputMode == 2 ) {
+			return url = `http://api.openweathermap.org/data/2.5/${querymode}?zip=${this.zipcode},${this.countryCode}&units=${unitModeEval()}&appid=${this.apikey}`;;
+		}
+		else if(modeStore.inputMode == 3 ) {
+			return url = `http://api.openweathermap.org/data/2.5/${querymode}?id=${this.cityID}&units=${unitModeEval()}&appid=${this.apikey}`;
+		}
+	};
+	getWeather = () => {
 		console.log('getWeather() hit');
 
-		const urlChange = (url) => {
-			if(modeStore.inputMode == 0 ) {
-				return url = `http://api.openweathermap.org/data/2.5/weather?q=${this.searchCity}&units=${unit}&appid=${this.apikey}`;
-			}
-			else if(modeStore.inputMode == 1 ) {
-				return url = `http://api.openweathermap.org/data/2.5/weather?lat=${this.latitude}&lon=${this.longitude}&units=${unit}&appid=${this.apikey}`;;
-			}
-			else if(modeStore.inputMode == 2 ) {
-				return url = `http://api.openweathermap.org/data/2.5/weather?zip=${this.zipcode},${this.countryCode}&units=${unit}&appid=${this.apikey}`;;
-			}
-			else if(modeStore.inputMode == 3 ) {
-				return url = `http://api.openweathermap.org/data/2.5/weather?id=${this.cityID}&units=${unit}&appid=${this.apikey}`;;
-			}
-		};
-
-		axios.get(urlChange(owm_api_url))
+		axios.get(this.urlChange(queryModeEval()))
 		.then((response) => {
 			if (response.status == 200) {
 				this.main = response.data.main;
@@ -108,17 +116,14 @@ class appState {
 		});
 	}
 
-	getForecast = (unit) => {
+	getForecast = () => {
 		console.log('getForecast() hit');
-		const CITY_FORECAST_URL = `http://api.openweathermap.org/data/2.5/forecast?q=${this.searchCity},${this.countryCode}&units=${unit}&appid=${this.apikey}`;
 
-		axios.get(CITY_FORECAST_URL)
+		axios.get(this.urlChange(queryModeEval()))
 		.then((response) => {
 			if (response.status == 200) {
-				this.forecast = response.data.list;
+				console.log(response.data.cnt);
 				this.loading = false;
-				console.log(this.forecast);
-				console.log(this.location);
 			}
 		})
 		.catch(error => {
@@ -126,11 +131,6 @@ class appState {
 			this.loading = false;
 	});
 	}
-
-	getIcon = (id) => {
-		const ICON_URL = `http://openweathermap.org/img/w/${id}.png`;
-	}
-
 }
 
 export default new appState();
