@@ -33,16 +33,44 @@ class Forecast extends Component {
 	}
 
 	render() {
-		const checkArrayLength = (element) => {
-			const tempArr = appState.forecastArr.length < 1 ? ['-','-','-'] : [appState.forecastArr[element].main.temp, appState.forecastArr[element].main.temp_max, appState.forecastArr[element].main.temp_min] ;
+		const checkArrayLength = (array) => {
+			// const tempArr = appState.forecastArr.length < 1 ? ['-','-','-'] : [appState.forecastArr[element].main.temp, appState.forecastArr[element].main.temp_max, appState.forecastArr[element].main.temp_min] ;
+			const tempArr = array.length < 1 ? ['-','-','-'] : array;
 			return tempArr;
+		}
+
+		const weatherArrMap = (arr) => {
+			// console.log(arr.length);
+			const weatherCards = arr.map((weathercard) => {
+				const weathercardArr = checkArrayLength([weathercard.main.temp, weathercard.main.temp_max, weathercard.main.temp_min]);
+				console.log(weathercardArr);
+				return (
+					<Weather tempArr={weathercardArr} key={arr.indexOf(weathercard)} />
+				);
+			});
+			return weatherCards;
+		}
+
+		const loadingRender = () => {
+			if (appState.loading) {
+				return (
+						<Text style={{color: '#fff'}}> Gathering Weather Data... </Text>
+				)
+			}
+			else {
+				return (
+					// <Text style={{color: '#fff'}}> Weather Data Row  </Text>
+					weatherArrMap(appState.forecastArr)
+				)
+			}
 		}
 
 		return (
 			<View style={styles.forecastsection}>
 				<View style={styles.forecastrow}>
 					<Text style={{color: '#fff'}}>Forecast Row</Text>
-					<Weather tempArr={checkArrayLength(0)} />
+					{/* <Weather tempArr={checkArrayLength(0)} /> */}
+					{ loadingRender() }
 				</View>
 			</View>
 		);

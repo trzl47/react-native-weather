@@ -94,9 +94,8 @@ class appState {
 			return url = `http://api.openweathermap.org/data/2.5/${querymode}?id=${this.cityID}&units=${unitModeEval()}&appid=${this.apikey}`;
 		}
 	};
-	getWeather = () => {
-		console.log('getWeather() hit');
 
+	getWeather = () => {
 		axios.get(this.urlChange(queryModeEval()))
 		.then((response) => {
 			if (response.status == 200) {
@@ -117,7 +116,7 @@ class appState {
 	}
 
 	getForecast = () => {
-		console.log('getForecast() hit');
+		this.forecastArr = [];
 		axios.get(this.urlChange(queryModeEval()))
 		.then((response) => {
 			if (response.status == 200) {
