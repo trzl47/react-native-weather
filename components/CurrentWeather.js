@@ -56,15 +56,28 @@ class CurrentWeather extends Component {
 		const time = moment().format('h:mm:ss a')
 		const icon = appState.getIcon(checkUndefined(checkArrayLength(appState.weather)[0].icon));
 
-		return (
-			<View style={styles.currentsection}>
-				<View style={styles.currentrow}>
+		const loadingRender = () => {
+			if (appState.loading) {
+				return (
+						<Text style={{color: '#fff'}}> Gathering Weather Data... </Text>
+				)
+			}
+			else {
+				return (
 					<Weather
 						day={day}
 						time={time}
 						icon={icon}
 						tempArr={formTempArr(appState.main.temp,appState.main.temp_max,appState.main.temp_min)}
 					/>
+				)
+			}
+		}
+
+		return (
+			<View style={styles.currentsection}>
+				<View style={styles.currentrow}>
+					{ loadingRender() }
 				</View>
 			</View>
 		);
