@@ -34,27 +34,22 @@ class appState {
 
 	updateSearchCity = (text) => {
 		this.searchCity = text;
-		console.log(`searchCity = ${this.searchCity}`);
 	}
 
 	updateCountryCode = (text) => {
 		this.countryCode = text;
-		console.log(`countryCode = ${this.countryCode}`);
 	}
 
 	updateZipCode = (text) => {
 		this.zipcode = text;
-		console.log(`zipcode = ${this.zipcode}`);
 	}
 
 	updateLongitude = (text) => {
 		this.longitude = text;
-		console.log(`longitude = ${this.longitude}`);
 	}
 
 	updateLatitude = (text) => {
 		this.latitude = text;
-		console.log(`latitude = ${this.latitude}`);
 	}
 
 	getIcon = (id) => {
