@@ -59,6 +59,7 @@ class appState {
 
 	getIcon = (id) => {
 		const ICON_URL = `http://openweathermap.org/img/w/${id}.png`;
+		return ICON_URL;
 	}
 
 	handleSubmit = () => {
@@ -116,14 +117,13 @@ class appState {
 	}
 
 	getForecast = () => {
-		this.forecastArr = [];
 		axios.get(this.urlChange(queryModeEval()))
 		.then((response) => {
 			if (response.status == 200) {
 				response.data.list.forEach((element) => {
 					this.forecastArr.push(element);
 				});
-				// console.log(response.data);
+				// console.log(this.forecastArr[0]);
 				this.searchCity = response.data.city.name;
 				this.countryCode = response.data.city.country;
 				this.latitude = response.data.city.coord.lat.toString();

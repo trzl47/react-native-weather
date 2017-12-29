@@ -1,6 +1,7 @@
 // Libs
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import moment from 'moment';
 
 // components
 import { FlatList, StyleSheet, View, Text } from 'react-native';
@@ -27,6 +28,12 @@ class CurrentWeather extends Component {
 		);
 	}
 
+	componentWillUnmount() {
+		// resetting state for if/when component remounts
+		appState.main = {};
+		appState.weather = [];
+	}
+
 	componentDidUpdate() {
 		modeStore.inputMode = 0;
 	}
@@ -36,14 +43,26 @@ class CurrentWeather extends Component {
 			return value == undefined ? '-' : value;
 		}
 
+		const checkArrayLength = (array) => {
+			const tempArr = array.length < 1 ? ['-'] : array;
+			return tempArr;
+		}
+
 		const formTempArr = (temp,max,min) => {
 			return [checkUndefined(temp),checkUndefined(max),checkUndefined(min)];
 		}
+
+		const day = moment().format('dddd');
+		const time = moment().format('h:mm:ss a')
+		const icon = appState.getIcon(checkUndefined(checkArrayLength(appState.weather)[0].icon));
 
 		return (
 			<View style={styles.currentsection}>
 				<View style={styles.currentrow}>
 					<Weather
+						day={day}
+						time={time}
+						icon={icon}
 						tempArr={formTempArr(appState.main.temp,appState.main.temp_max,appState.main.temp_min)}
 					/>
 				</View>

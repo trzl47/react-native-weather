@@ -1,9 +1,10 @@
 // Libs
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import moment from 'moment';
 
 // components
-import { FlatList, StyleSheet, View, Text } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, View, Text } from 'react-native';
 import Weather from './Weather.js';
 
 // stores
@@ -28,24 +29,40 @@ class Forecast extends Component {
 		);
 	}
 
+	componentWillUnmount() {
+		// resetting state for if/when component remounts
+		appState.forecastArr = [];
+	}
+
 	componentDidUpdate() {
 		modeStore.inputMode = 0;
 	}
 
 	render() {
 		const checkArrayLength = (array) => {
-			// const tempArr = appState.forecastArr.length < 1 ? ['-','-','-'] : [appState.forecastArr[element].main.temp, appState.forecastArr[element].main.temp_max, appState.forecastArr[element].main.temp_min] ;
 			const tempArr = array.length < 1 ? ['-','-','-'] : array;
 			return tempArr;
 		}
 
+		// map data to Weather components
 		const weatherArrMap = (arr) => {
-			// console.log(arr.length);
 			const weatherCards = arr.map((weathercard) => {
+				// create temperature array
 				const weathercardArr = checkArrayLength([weathercard.main.temp, weathercard.main.temp_max, weathercard.main.temp_min]);
-				console.log(weathercardArr);
+
+				// caluclate dates
+				const api = weathercard.dt_txt;
+				const day = moment(api).format('dddd');
+				const time = moment(api).format('h:mm:ss a')
+				const icon = appState.getIcon(weathercard.weather[0].icon);
+
 				return (
-					<Weather tempArr={weathercardArr} key={arr.indexOf(weathercard)} />
+					<Weather
+						day={day}
+						time={time}
+						tempArr={weathercardArr}
+						icon={icon}
+						key={arr.indexOf(weathercard)} />
 				);
 			});
 			return weatherCards;
@@ -59,7 +76,6 @@ class Forecast extends Component {
 			}
 			else {
 				return (
-					// <Text style={{color: '#fff'}}> Weather Data Row  </Text>
 					weatherArrMap(appState.forecastArr)
 				)
 			}
@@ -68,9 +84,12 @@ class Forecast extends Component {
 		return (
 			<View style={styles.forecastsection}>
 				<View style={styles.forecastrow}>
-					<Text style={{color: '#fff'}}>Forecast Row</Text>
-					{/* <Weather tempArr={checkArrayLength(0)} /> */}
-					{ loadingRender() }
+					<ScrollView
+						contentContainerStyle={styles.contentContainer}
+						horizontal={true}
+						showsHorizontalScrollIndicator={false}>
+						{ loadingRender() }
+  				</ScrollView>
 				</View>
 			</View>
 		);
@@ -90,6 +109,11 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
+	contentContainer: {
+			paddingVertical: 20,
+			alignItems: 'center',
+			justifyContent: 'center',
+		}
 });
 
 export default Forecast;
